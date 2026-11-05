@@ -47,6 +47,8 @@ export const palette = {
   closed: '#a99cc4',
   closedShade: '#8a7daa',
   white: '#ffffff',
+  signRed: '#9a1f2e',
+  closedText: '#5a4f7a',
 
   skins: ['#f1c27d', '#c68642', '#8d5524', '#e0ac69', '#ffdbac'],
   hairs: ['#3b2219', '#1b1035', '#a55728', '#e6c35c', '#6b4429'],
@@ -54,4 +56,16 @@ export const palette = {
   pants: ['#2d3a6b', '#3b2a4f', '#5a4a3a'],
   bunting: [colors.stripeA, colors.accent, '#2b8ccc', colors.stripeB],
   balloons: [colors.stripeA, colors.accent, '#2b8ccc', colors.water, '#f59ac0'],
+} as const;
+
+/**
+ * The sign boards' colours. Sign text is small, so each text colour keeps at
+ * least the 4.5:1 contrast with its board that WCAG AA asks of normal text.
+ */
+export const signs = {
+  booth: { board: palette.cream, edge: palette.red, text: palette.signRed },
+  closed: { board: palette.metal, edge: palette.closedShade, text: palette.closedText },
+  tickets: { board: palette.gold, edge: palette.red, text: palette.signRed },
+  cart: { board: palette.board, edge: palette.woodDark, text: palette.ink },
+  entrance: { board: palette.woodDark, edge: palette.wood, text: palette.gold },
 } as const;

@@ -1,6 +1,6 @@
 import { canvasFont, theme } from '../carnival';
 import bannerUrl from './aidevcon-banner.png';
-import { palette } from './palette';
+import { palette, signs } from './palette';
 import {
   CART_KINDS,
   toScreen,
@@ -996,13 +996,7 @@ function cart(ctx: Ctx, prop: Prop, t: number) {
 
   // A little sign above it all.
   const sign = at(prop.x + 0.5, prop.y + 0.5, kind === 2 ? 50 : 42);
-  onPlane(ctx, sign, () =>
-    signBoard(ctx, CART_KINDS[kind].toUpperCase(), 30, 9, {
-      board: palette.board,
-      edge: palette.woodDark,
-      text: palette.ink,
-    }),
-  );
+  onPlane(ctx, sign, () => signBoard(ctx, CART_KINDS[kind].toUpperCase(), 30, 9, signs.cart));
 }
 
 function ticketBooth(ctx: Ctx, prop: Prop) {
@@ -1030,9 +1024,7 @@ function ticketBooth(ctx: Ctx, prop: Prop) {
     );
   }
   box(ctx, x - 0.05, y - 0.05, 0.8, 0.8, 26, 3, palette.blue, palette.blueShade, palette.blueShade);
-  onPlane(ctx, at(x + 0.35, y + 0.35, 38), () =>
-    signBoard(ctx, 'TICKETS', 28, 9, { board: palette.gold, edge: palette.red, text: palette.red }),
-  );
+  onPlane(ctx, at(x + 0.35, y + 0.35, 38), () => signBoard(ctx, 'TICKETS', 28, 9, signs.tickets));
 }
 
 function bench(ctx: Ctx, prop: Prop) {
@@ -1522,16 +1514,7 @@ function booth(ctx: Ctx, slot: BoothSlot, name: string, t: number, glow: boolean
       target(ctx, 9);
       ctx.restore();
     }
-    signBoard(
-      ctx,
-      name,
-      60,
-      16,
-      open
-        ? { board: palette.cream, edge: palette.red, text: palette.red }
-        : { board: palette.metal, edge: palette.closedShade, text: palette.closedShade },
-      glow,
-    );
+    signBoard(ctx, name, 60, 16, open ? signs.booth : signs.closed, glow);
     if (open) {
       for (let i = 0; i < 8; i++) {
         ctx.fillStyle = Math.sin(t * 5 + i * 1.3) > -0.2 ? palette.gold : palette.goldShade;
@@ -1667,11 +1650,7 @@ export function drawArch(ctx: Ctx, map: MidwayMap, t: number) {
     ctx.beginPath();
     ctx.ellipse(0, -10, 12, 9, 0, Math.PI, Math.PI * 2);
     ctx.fill();
-    signBoard(ctx, 'TESSL CARNIVAL', 92, 20, {
-      board: palette.wood,
-      edge: palette.woodDark,
-      text: palette.gold,
-    });
+    signBoard(ctx, 'TESSL CARNIVAL', 92, 20, signs.entrance);
     for (let i = 0; i < 14; i++) {
       ctx.fillStyle = Math.sin(t * 5 - i * 0.8) > 0 ? palette.cream : palette.goldShade;
       ctx.beginPath();
