@@ -1,6 +1,15 @@
 import './style.css';
-import { applyTheme, bestScore, type CarnivalGame } from './carnival';
+import {
+  applyTheme,
+  bestScore,
+  leaderScores,
+  MAX_NAME_LENGTH,
+  playerName,
+  setPlayerName,
+  type CarnivalGame,
+} from './carnival';
 import { registry } from './games';
+import { ANONYMOUS, leaderboardRows } from './leaderboard';
 import { startMidway } from './midway/midway';
 import type { BoothSlot } from './midway/world';
 import { carnivalLink, REPO_URL, shareLinks } from './share';
@@ -9,6 +18,8 @@ applyTheme();
 
 const app = document.querySelector<HTMLElement>('#app')!;
 let stop: (() => void) | undefined;
+
+const LEADERBOARD_SIZE = 10;
 
 function bestText(game: CarnivalGame): string {
   const best = bestScore(game.id);
@@ -39,10 +50,23 @@ function renderMidway() {
           </span>
         </span>
       </p>
-      <nav class="midway-guide" aria-label="Booths">
-        <h2>Booths</h2>
-        <ul></ul>
-      </nav>
+      <div class="midway-side">
+        <nav class="midway-guide" aria-label="Booths">
+          <h2>Booths</h2>
+          <ul></ul>
+        </nav>
+        <section class="midway-leaderboard" aria-labelledby="leaderboard-title">
+          <h2 id="leaderboard-title">Leaderboard</h2>
+          <form class="player-name">
+            <label for="player-name">Your name</label>
+            <input id="player-name" name="name" maxlength="${MAX_NAME_LENGTH}" autocomplete="nickname" placeholder="${ANONYMOUS}" />
+            <button type="submit">Save</button>
+          </form>
+          <p class="playing-as" aria-live="polite"></p>
+          <ol></ol>
+          <p class="no-scores">No scores yet. Play a booth to get on the board.</p>
+        </section>
+      </div>
       <div class="booth-card" aria-live="polite" hidden>
         <h2></h2>
         <p class="description"></p>
@@ -68,6 +92,8 @@ function renderMidway() {
     guide.append(item);
   }
 
+  renderLeaderboard();
+
   const card = app.querySelector<HTMLElement>('.booth-card')!;
   const showBooth = (booth: BoothSlot | undefined) => {
     const game = booth?.gameId ? registry.get(booth.gameId) : undefined;
@@ -88,6 +114,39 @@ function renderMidway() {
     onReach: showBooth,
   });
   stop = midway.stop;
+}
+
+function renderLeaderboard() {
+  const board = app.querySelector<HTMLElement>('.midway-leaderboard')!;
+  const form = board.querySelector<HTMLFormElement>('.player-name')!;
+  const input = form.querySelector<HTMLInputElement>('input')!;
+  const playingAs = board.querySelector<HTMLElement>('.playing-as')!;
+  const showName = (name: string | undefined) => {
+    input.value = name ?? '';
+    playingAs.textContent = name
+      ? `Your scores carry the name ${name}.`
+      : 'You are playing anonymously.';
+  };
+  showName(playerName());
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    showName(setPlayerName(input.value));
+    input.blur();
+  });
+
+  const list = board.querySelector('ol')!;
+  const rows = leaderboardRows(leaderScores(LEADERBOARD_SIZE), registry.get);
+  for (const row of rows) {
+    const item = document.createElement('li');
+    item.innerHTML = `<span class="player"></span> <span class="score"></span> <span class="detail"></span>`;
+    item.querySelector('.player')!.textContent = row.player;
+    item.querySelector('.score')!.textContent = String(row.score);
+    item.querySelector('.detail')!.textContent = row.prize
+      ? `${row.game} · ${row.prize}`
+      : row.game;
+    list.append(item);
+  }
+  board.querySelector<HTMLElement>('.no-scores')!.hidden = rows.length > 0;
 }
 
 function renderGame(game: CarnivalGame) {

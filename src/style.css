@@ -98,6 +98,7 @@ body[data-view='midway'] main {
 
 .midway-help,
 .midway-guide,
+.midway-leaderboard,
 .midway-credit,
 .booth-card {
   position: absolute;
@@ -154,14 +155,35 @@ kbd {
   font-weight: bold;
 }
 
-.midway-guide {
+.midway-side {
+  position: absolute;
   top: 16px;
   right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 240px;
+  max-height: calc(100% - 32px);
+}
+
+.midway-side .midway-guide,
+.midway-side .midway-leaderboard {
+  position: static;
+}
+
+.midway-guide,
+.midway-leaderboard {
   padding: 10px 14px;
   font-size: 14px;
 }
 
-.midway-guide h2 {
+.midway-leaderboard {
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.midway-guide h2,
+.midway-leaderboard h2 {
   margin: 0 0 6px;
   color: var(--color-muted);
   font-size: 12px;
@@ -193,6 +215,79 @@ kbd {
 .midway-guide .best {
   color: var(--color-muted);
   font-weight: normal;
+}
+
+.player-name {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.player-name label {
+  width: 100%;
+  color: var(--color-muted);
+}
+
+.player-name input {
+  flex: 1;
+  min-width: 0;
+  padding: 4px 8px;
+  border: 1px solid var(--color-muted);
+  border-radius: 4px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.player-name button {
+  padding: 4px 12px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--color-accent);
+  color: var(--color-background);
+  font: inherit;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.playing-as {
+  margin: 6px 0 8px;
+  color: var(--color-muted);
+  font-size: 13px;
+}
+
+.midway-leaderboard ol {
+  margin: 0;
+  padding-left: 22px;
+}
+
+.midway-leaderboard li {
+  padding: 3px 0;
+}
+
+.midway-leaderboard .player {
+  font-weight: bold;
+}
+
+.midway-leaderboard .score {
+  float: right;
+  font-weight: bold;
+}
+
+.midway-leaderboard .detail {
+  display: block;
+  color: var(--color-muted);
+  font-size: 13px;
+}
+
+.no-scores {
+  margin: 0;
+  color: var(--color-muted);
+}
+
+.no-scores[hidden] {
+  display: none;
 }
 
 .booth-card {

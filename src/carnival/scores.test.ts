@@ -67,6 +67,37 @@ describe('score board', () => {
     expect(board.best('water-cannon')).toBe(90);
   });
 
+  it("records the player's name with each score", () => {
+    const player: { name?: string } = {};
+    const board = createScoreBoard(memoryStorage(), Date.now, () => player.name);
+    board.record('water-cannon', 10);
+    player.name = 'Ada';
+    board.record('water-cannon', 20);
+    expect(board.top('water-cannon', 2).map((e) => e.player)).toEqual(['Ada', undefined]);
+  });
+
+  it('lists the top scores across every game, including scores without a name', () => {
+    let clock = 0;
+    const storage = memoryStorage();
+    storage.setItem(
+      'tessl-carnival:scores',
+      JSON.stringify([{ gameId: 'ring-toss', score: 300, at: 0 }]),
+    );
+    const board = createScoreBoard(
+      storage,
+      () => ++clock,
+      () => 'Ada',
+    );
+    board.record('water-cannon', 120);
+    board.record('ring-toss', 50);
+    board.record('water-cannon', 300);
+    expect(board.leaders(3).map((e) => [e.gameId, e.score, e.player])).toEqual([
+      ['ring-toss', 300, undefined],
+      ['water-cannon', 300, 'Ada'],
+      ['water-cannon', 120, 'Ada'],
+    ]);
+  });
+
   it('rejects negative and non-numeric scores', () => {
     const board = createScoreBoard(memoryStorage());
     expect(() => board.record('water-cannon', -1)).toThrow();
