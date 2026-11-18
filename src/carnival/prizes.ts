@@ -8,3 +8,10 @@ export interface PrizeTier {
 export function prizeFor(score: number, tiers: readonly PrizeTier[]): PrizeTier | undefined {
   return [...tiers].sort((a, b) => b.minScore - a.minScore).find((tier) => score >= tier.minScore);
 }
+
+/** The prizes for a game that doesn't list its own. */
+export const CARNIVAL_PRIZES: readonly PrizeTier[] = [
+  { name: 'Giant teddy bear', minScore: 300 },
+  { name: 'Goldfish', minScore: 200 },
+  { name: 'Rubber duck', minScore: 100 },
+];
